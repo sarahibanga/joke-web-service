@@ -1,0 +1,17 @@
+[package]
+name = "joke_collector"
+version = "0.1.0"
+authors = ["Sarah Ibanga <sarah.ibanga@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+docopt = "1.1.0"
+futures = "0.3.12"
+reqwest = "0.11.0"
+serde = "1.0.120"
+serde_json = "1.0.61"
+tokio = { version = "1.0.2", features = ["macros", "rt", "rt-multi-thread"] }
+
+
