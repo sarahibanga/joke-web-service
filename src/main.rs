@@ -9,7 +9,7 @@ use docopt::Docopt;
 use futures::{	StreamExt, 
 				prelude::{Future, stream}
 			};
-use reqwest::{Client, get, Response};
+use reqwest::{Client, Error,get, Response};
 use serde::Deserialize;
 use serde_json::{Value};
 
@@ -19,15 +19,13 @@ const RANDOM_NAME_URI: &'static str = "https://names.mcquay.me/api/v0";
 
 
 const USAGE: &'static str = "
-Joke Web Service.
-
 Usage:
-	joke_collector.py [options]
+	joke_collector [options]
 
-	Options:
-		--num-requests=<n>   Number of concurrent requests [default: 1].
-		-h, --help           Show this screen.
-		--version            Show version.
+Options:
+	--num-requests=<n>   Number of concurrent requests [default: 1].
+	-h, --help           Show this screen.
+	--version            Show version.
 
 ";
 
@@ -42,13 +40,15 @@ async fn main() {
 	let args: Args = Docopt::new(USAGE)
 		.and_then(|d| d.deserialize())
 		.unwrap_or_else(|e| e.exit());
-	println!("{:?}", args);
 
 	let num_requests = args.flag_num_requests;
+
+	// TODO: Setup and bind server to the provided post uri (including routes).      
 	    
     // Get a name and the corresponding joke
 	let name_uris = vec![RANDOM_NAME_URI; num_requests];
-	let _fut = stream::iter(name_uris).for_each_concurrent(
+
+	let fut = stream::iter(name_uris).for_each_concurrent(
 		num_requests,
 		|name_uri| async move {
 
@@ -60,21 +60,16 @@ async fn main() {
 			let joke_body = get_body(joke_uri.to_string()).await;
 			let joke_json: Value = serde_json::from_str(&joke_body).expect("Unable to parse to json.");
 			let joke = joke_json["value"]["joke"].as_str().unwrap_or("");
-			println!("joke_body: {}", joke);
+			
+			println!("Joke to post: {:?}", joke.to_string());
 
+			// TODO: Use the following to post joke to uri.
 			let client = Client::new();
-			let joke_post_body = post_body(client, joke.to_string()).await;
-			println!("joke post body: {:?}", joke_post_body);
-
-
-
-
+			let _joke_post_body = post_body(client, joke.to_string()).await;
 		}
-	).await;
-	// 
-	// let addr = "0.0.0.0:5000".parse().expect("Failed to create address");
+	);
 
-	// let server = 
+	fut.await;
 
 }
 
@@ -90,13 +85,12 @@ pub fn get_body(uri: String) -> impl Future<Output = String>  {
 	}
 }
 
-pub fn post_body(client: Client, body: String) -> impl Future<Output = Response>  {
+pub fn post_body(client: Client, body: String) -> impl Future<Output = Result<Response, Error>>  {
 	async move {
 		let res = client.post(POST_URI)
 			.body(body)
 		    .send()
-		    .await
-		    .expect("send");
+		    .await;
 		res
 	}
 }
