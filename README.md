@@ -3,7 +3,7 @@
 ## Overview
 - Combine two web services for retrieving a name and a random joke. 
 - Input the name into the random joke.
-- Post the joke to the provided uri (`http://localhost:5000"`).
+- Post the joke to the provided uri (`http://localhost:5000`).
 
 ## Code 
 - The current code handles asynchronous, concurrent requests.
