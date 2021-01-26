@@ -1,4 +1,4 @@
-# joke-collector
+# joke-web-service
 
 ## Overview
 - Combine two web services for retrieving a name and a random joke. 
