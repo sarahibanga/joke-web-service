@@ -42,3 +42,6 @@ Joke to post: "The class object inherits from Maria Hirleman"
 - [Crate reqwest](https://docs.rs/reqwest/0.10.7/reqwest/)
 - [Futures StreamExt: for_each_concurrent](https://docs.rs/futures-preview/0.3.0-alpha.18/futures/stream/trait.StreamExt.html#method.for_each_concurrent)
 - [Reqwest form example](https://github.com/seanmonstar/reqwest/blob/master/examples/form.rs)
+
+## Next Steps
+- I will try to carve out time to implement the **TODO** comments and add unit tests.
